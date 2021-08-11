@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="flight" format="json">
+      <types:shape format="weave" example="examples/flight.json"><![CDATA[%dw 2.0
+
+type flight = {|
+  planeType: String, 
+  code2: String, 
+  takeOffDate: String, 
+  code1: String, 
+  fromAirport: String, 
+  price: Number {"typeId": "int"}, 
+  seatsAvailable: Number {"typeId": "int"}, 
+  toAirport: String, 
+  ID: Number {"typeId": "int"}, 
+  airlineName: String, 
+  totalSeats: Number {"typeId": "int"}
+|} {"example": "{\\\"planeType\\\":\\\"Boeing 777\\\",\\\"code2\\\":\\\"0192\\\",\\\"takeOffDate\\\":\\\"2016-01-20T00:00:00\\\",\\\"code1\\\":\\\"ffee\\\",\\\"fromAirport\\\":\\\"MUA\\\",\\\"price\\\":300,\\\"seatsAvailable\\\":0,\\\"toAirport\\\":\\\"LAX\\\",\\\"ID\\\":3,\\\"airlineName\\\":\\\"American Airlines\\\",\\\"totalSeats\\\":300}"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#a629b370-83f0-4ab0-ae33-a795b9a7c78c">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="flight"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

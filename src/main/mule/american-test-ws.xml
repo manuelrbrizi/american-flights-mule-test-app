@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd">
+    <http:listener-config name="american-flights-api-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="${http.port}">
+		</http:listener-connection>
+    </http:listener-config>
+    <apikit:config name="american-flights-api-config" api="resource::7ad92f26-552c-463f-8ac3-81e894bdafef:american-test-api:1.0.0:raml:zip:american-flights-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <flow name="american-flights-api-main">
+        <http:listener config-ref="american-flights-api-httpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:body ><![CDATA[#[output application/json --- payload]]]></http:body>
+				<http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:error-response>
+        </http:listener>
+        <json-logger:logger doc:name="Logger" doc:id="962f012a-9a8f-4e81-89c8-e0138ac5a49f" config-ref="JSON_Logger_Config" message="Starting execution"/>
+		<set-variable value="american-flights-api-main" doc:name="flow" doc:id="689e2eeb-8f84-4e04-b5fc-4634b2af4931" variableName="flow"/>
+		<apikit:router config-ref="american-flights-api-config" />
+        <json-logger:logger doc:name="Logger" doc:id="78d6b8e5-8227-49a6-b87a-6f307bef82c9" config-ref="JSON_Logger_Config" message="End execution" tracePoint="END">
+		</json-logger:logger>
+    </flow>
+    <flow name="get:\flights:american-flights-api-config">
+		<json-logger:logger doc:name="Logger" doc:id="9a0396e2-334e-4b69-a101-f556537cab15" config-ref="JSON_Logger_Config" message="Starting flow GET /flights" />
+		<flow-ref doc:name="common-subflow" doc:id="547e3eba-9128-43fa-8136-485970329aeb" name="common-subflow" />
+		<set-variable value="get-american-flights" doc:name="flow" doc:id="96ddad5f-e307-4142-9ff5-fb2656137792" variableName="flow" />
+		<flow-ref doc:name="get-american-flights" doc:id="0cdc880e-baf4-427b-b1f9-8af9e8d16f42" name="get-american-flights" />
+		<json-logger:logger doc:name="Logger" doc:id="bb657828-4a22-42e0-acd0-8b2f5040b81e" config-ref="JSON_Logger_Config" message="Ending GET /flights flow" tracePoint="END">
+		</json-logger:logger>
+    </flow>
+    <flow name="get:\flights\(ID):american-flights-api-config">
+		<json-logger:logger doc:name="Logger" doc:id="b8c50cbf-18de-491d-8a94-3d8cda072272" config-ref="JSON_Logger_Config" message="Starting flow GET /flights/id"/>
+		<flow-ref doc:name="common-subflow" doc:id="37d3d984-1940-4227-8728-162d38ae5e92" name="common-subflow"/>
+		<set-variable value="get-american-flights-by-id" doc:name="flow" doc:id="48f6a2a9-407e-44af-a476-71beead91a60" variableName="flow"/>
+		<flow-ref doc:name="get-american-flights-by-id" doc:id="da6e926c-02db-4454-97b6-d7de863588ac" name="get-american-flights-by-id"/>
+		<json-logger:logger doc:name="Logger" doc:id="a8594c27-346d-49fd-9caa-8430c6a7745a" config-ref="JSON_Logger_Config" message="Ending GET /flights/id flow" tracePoint="END" />
+    </flow>
+    <sub-flow name="common-subflow" doc:id="b0933099-b985-4635-8951-5c05f917a9a0">
+        <ee:transform doc:name="Transform Message" doc:id="18cbff2d-46fc-4a52-8c9b-2d494995ef5c">
+            <ee:message />
+            <ee:variables>
+                <ee:set-variable variableName="muleMessage"><![CDATA[%dw 2.0
+var headers = if (attributes.headers != null) attributes.headers else ""
+var qparams = if (attributes.queryParams != null) attributes.queryParams else ""
+var uparams = if (attributes.uriParams != null) attributes.uriParams else ""
+output application/json
+---
+{
+	"headers" : headers,
+	"queryparams": qparams,
+	"uriparams": uparams,
+	"payload" : payload
+}]]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <logger level="INFO" doc:name="Logger" doc:id="f5a6ea95-cd8b-4e1d-a473-a4f8c87db8a4" message="#[%dw 2.0 output application/json --- muleMessage:vars.muleMessage]" />
+        <logger level="INFO" doc:name="Logger" doc:id="05dc0113-1eaa-4183-959e-d2124985b18a" message="#[%dw 2.0 output application/json --- ReprocessHeader: vars.muleMessage.headers.reprocess]" />
+    </sub-flow>
+</mule>

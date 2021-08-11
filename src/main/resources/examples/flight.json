@@ -1,0 +1,13 @@
+{
+    "planeType" : "Boeing 777",
+    "code2" : "0192",
+    "takeOffDate" : "2016-01-20T00:00:00",
+    "code1" : "ffee",
+    "fromAirport" : "MUA",
+    "price" : 300,
+    "seatsAvailable" : 0,
+    "toAirport" : "LAX",
+    "ID" : 3,
+    "airlineName" : "American Airlines",
+    "totalSeats" : 300
+}

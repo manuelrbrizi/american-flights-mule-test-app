@@ -1,0 +1,17 @@
+http:
+  port: "8081"
+
+json:
+  logger:
+    application:
+      name: "american-test-ws"
+      version: "1.0.0-SNAPSHOT"
+      
+quartz:
+  scheduler: "0 0/10 * * * ?"
+  short: "0 0/1 * * * ?"
+
+db:
+  host: "iltdb.learn.mulesoft.com"
+  port: "3306"
+  database: "training"

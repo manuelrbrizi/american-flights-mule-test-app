@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	<validation:config name="Validation_Config" doc:name="Validation Config" doc:id="64e40040-9107-4109-99fc-db55db8e2498" />
+	<flow name="get-american-flights" doc:id="574b4d13-f864-41c3-9ed8-abdfb1992beb" >
+		<json-logger:logger doc:name="Logger" doc:id="bea0889c-b29e-4920-ab9a-073d26805956" config-ref="JSON_Logger_Config" message="Starting get-american-flights"/>
+		<db:select doc:name="flights from database" doc:id="0dfd5456-5e0d-41c6-b0aa-47cd670b14fb" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * from american]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="12a90be0-5167-4a3d-a00c-e219e59d7c8f">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload map (flight) -> {
+	flight_id: flight.ID,
+	plate_type: flight.planeType,
+	date: flight.takeOffDate,
+	price: flight.price,
+	airline_name: flight.airlineName,
+	to_airport: flight.toAirport,
+	total_seats: flight.totalSeats
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<json-logger:logger doc:name="Logger" doc:id="58a4b978-f5f7-46fa-b83d-cb8ffc9d5c6f" config-ref="JSON_Logger_Config" message="Ending get-american-flights" tracePoint="END">
+			<json-logger:content ><![CDATA[#[import modules::JSONLoggerModule
+output application/json 
+---
+payload
+//{
+//    payload: JSONLoggerModule::stringifyNonJSON(payload)
+//}]]]></json-logger:content>
+		</json-logger:logger>
+	</flow>
+	<flow name="get-american-flights-by-id" doc:id="229d156e-1377-4e3a-80d3-666042492d75" >
+		<json-logger:logger doc:name="Logger" doc:id="156b0186-e4c7-47a4-b907-fe00f7c93eb0" config-ref="JSON_Logger_Config" message="Starting get-american-flights-by-id" />
+		<try doc:name="Try" doc:id="254d3f40-e4fd-4951-85ca-ffa22ca75eb3" >
+			<db:select doc:name="flights from database" doc:id="4cc9dc9e-ab16-43a4-b9ab-a99d6fe4ede5" config-ref="Database_Config">
+			<db:sql><![CDATA[select * from american where ID = :flightId]]></db:sql>
+			<db:input-parameters><![CDATA[#[flightId: message.attributes.uriParams.ID]]]></db:input-parameters>
+		</db:select>
+			<validation:is-not-empty-collection doc:name="flights" doc:id="180dbbf7-3166-49d3-bcf6-e8c83cf5b67e" message="Not any flight for that id" config-ref="Validation_Config"/>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="c99ba918-9874-4d7c-8b63-e2f6310f4ea9" >
+					<set-payload value='#["Not any flight for that ID"]' doc:name="error message" doc:id="1769c5d1-ff62-4637-a3e0-417208d4930f" />
+				</on-error-continue>
+			</error-handler>
+		</try>
+		<ee:transform doc:name="Transform Message" doc:id="a629b370-83f0-4ab0-ae33-a795b9a7c78c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+(payload map (flight) -> {
+	flight_id: flight.ID,
+	plate_type: flight.planeType,
+	date: flight.takeOffDate,
+	price: flight.price,
+	airline_name: flight.airlineName,
+	to_airport: flight.toAirport,
+	total_seats: flight.totalSeats
+})[0]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<json-logger:logger doc:name="Logger" doc:id="de322081-7536-4338-81b4-037ec677942c" config-ref="JSON_Logger_Config" message="Ending get-american-flights-by-id" tracePoint="END" />
+	</flow>
+	<flow name="scheduler-flow" doc:id="d44e630a-803e-466d-8e8b-720491692c08" >
+		<scheduler doc:name="10 min" doc:id="1c676f24-ab87-45bb-8e9b-ea839215c43c" >
+			<scheduling-strategy >
+				<cron expression="${quartz.scheduler}"/>
+			</scheduling-strategy>
+		</scheduler>
+		<logger level="INFO" doc:name="Logger" doc:id="1316aecf-ce6e-451d-adc0-32f662e090ca" message='#["Health-check log / 10 min"]'/>
+	</flow>
+	<flow name="short-scheduler-flow" doc:id="bbf55cb9-433a-48e6-a882-ab5ee6e10347" >
+		<scheduler doc:name="1 min" doc:id="6b89316b-a6fb-49f0-8e79-5a8e895f522a" >
+			<scheduling-strategy >
+				<cron expression="${quartz.short}" />
+			</scheduling-strategy>
+		</scheduler>
+		<logger level="INFO" doc:name="Logger" doc:id="8f37b60b-d0a1-4bd7-bd5c-b6fc16913049" message="Health check - 1 min"/>
+	</flow>
+</mule>
