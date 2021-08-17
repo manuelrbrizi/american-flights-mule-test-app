@@ -5,6 +5,14 @@ pipeline {
         jdk 'Java 8u221' 
     }
   stages {
+  stage('Deploy CloudHub') { 
+      environment {
+        TOKEN = credentials('token')
+      }
+      steps {
+      	sh 'mvn clean test -Denv=local -Dtoken=${TOKEN}'
+      }
+    }
     stage('Deploy CloudHub') { 
       environment {
         ANYPOINT_CREDENTIALS = credentials('anypoint.credentials')

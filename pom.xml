@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
-	 <!-- 7ad92f26-552c-463f-8ac3-81e894bdafef -->
+	<!-- 7ad92f26-552c-463f-8ac3-81e894bdafef -->
 
 	<groupId>7ad92f26-552c-463f-8ac3-81e894bdafef</groupId>
 	<artifactId>american-test-ws</artifactId>
@@ -17,47 +16,81 @@
 
 		<app.runtime>4.3.0</app.runtime>
 		<mule.maven.plugin.version>3.3.5</mule.maven.plugin.version>
+		<munit.version>2.3.5</munit.version>
 	</properties>
 
 	<build>
 		<plugins>
 			<plugin>
-			  <groupId>org.mule.tools.maven</groupId>
-			  <artifactId>mule-maven-plugin</artifactId>
-			  <version>${mule.maven.plugin.version}</version>
-			  <extensions>true</extensions>
-			  <configuration>
-			  	<sharedLibraries>
-					<sharedLibrary>
-						<groupId>mysql</groupId>
-						<artifactId>mysql-connector-java</artifactId>
-					</sharedLibrary>
-				</sharedLibraries>
-				<cloudHubDeployment>
-				    <uri>https://anypoint.mulesoft.com</uri>
-				    <muleVersion>${app.runtime}</muleVersion>
-				    <username>${username}</username>
-				    <password>${password}</password>
-				    <applicationName>${cloudhub.application.name}</applicationName>
-				    <environment>${environment}</environment>
-				    <region>${region}</region>
-				    <workers>${workers}</workers>
-				    <workerType>${workerType}</workerType>
-				    <properties>
-				      <env>${env}</env>
-				      <token>${token}</token>
-				    </properties>
-					<region>eu-central-1</region>
-					<businessGroupId>${businessGroupId}</businessGroupId>
-					<businessGroup>MuleSoft</businessGroup>
-					<objectStoreV2>true</objectStoreV2>
-				 </cloudHubDeployment>
-			 </configuration>
+				<groupId>org.mule.tools.maven</groupId>
+				<artifactId>mule-maven-plugin</artifactId>
+				<version>${mule.maven.plugin.version}</version>
+				<extensions>true</extensions>
+				<configuration>
+					<sharedLibraries>
+						<sharedLibrary>
+							<groupId>mysql</groupId>
+							<artifactId>mysql-connector-java</artifactId>
+						</sharedLibrary>
+					</sharedLibraries>
+					<cloudHubDeployment>
+						<uri>https://anypoint.mulesoft.com</uri>
+						<muleVersion>${app.runtime}</muleVersion>
+						<username>${username}</username>
+						<password>${password}</password>
+						<applicationName>${cloudhub.application.name}</applicationName>
+						<environment>${environment}</environment>
+						<region>${region}</region>
+						<workers>${workers}</workers>
+						<workerType>${workerType}</workerType>
+						<properties>
+							<env>${env}</env>
+							<token>${token}</token>
+						</properties>
+						<region>eu-central-1</region>
+						<businessGroupId>${businessGroupId}</businessGroupId>
+						<businessGroup>MuleSoft</businessGroup>
+						<objectStoreV2>true</objectStoreV2>
+					</cloudHubDeployment>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-clean-plugin</artifactId>
 				<version>3.0.0</version>
+			</plugin>
+			<plugin>
+				<groupId>com.mulesoft.munit.tools</groupId>
+				<artifactId>munit-maven-plugin</artifactId>
+				<version>${munit.version}</version>
+				<executions>
+					<execution>
+						<id>test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>test</goal>
+							<goal>coverage-report</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+                    <coverage>
+                    	<runCoverage>true</runCoverage>
+                        <failBuild>false</failBuild>
+                        <requiredApplicationCoverage>50</requiredApplicationCoverage>
+                        <requiredResourceCoverage>0</requiredResourceCoverage>
+                        <requiredFlowCoverage>10</requiredFlowCoverage>
+                        <ignoreFlows>
+							<ignoreFlow>scheduler-flow</ignoreFlow>	
+							<ignoreFlow>short-scheduler-flow</ignoreFlow>	
+							<ignoreFlow>common-subflow</ignoreFlow>
+						</ignoreFlows>
+                        <formats>
+                            <format>console</format>
+                            <format>html</format>
+                        </formats>
+                    </coverage>
+            	</configuration>
 			</plugin>
 		</plugins>
 	</build>
@@ -129,8 +162,33 @@
 			<version>1.4.5</version>
 			<classifier>mule-plugin</classifier>
 		</dependency>
+		<dependency>
+			<groupId>com.mulesoft.munit</groupId>
+			<artifactId>munit-runner</artifactId>
+			<version>2.3.5</version>
+			<classifier>mule-plugin</classifier>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.mulesoft.munit</groupId>
+			<artifactId>munit-tools</artifactId>
+			<version>2.3.5</version>
+			<classifier>mule-plugin</classifier>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mule.weave</groupId>
+			<artifactId>assertions</artifactId>
+			<version>1.0.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.mulesoft.munit.utils</groupId>
+			<artifactId>munit-dbserver-module</artifactId>
+			<version>2.0.2</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
 	</dependencies>
-	
 	<distributionManagement>
 		<repository>
 			<id>MuleRepo</id>
@@ -138,7 +196,7 @@
 			<url>https://maven.anypoint.mulesoft.com/api/v1/organizations/7ad92f26-552c-463f-8ac3-81e894bdafef/maven</url>
 			<layout>default</layout>
 		</repository>
-    </distributionManagement>
+	</distributionManagement>
 
 	<repositories>
 		<repository>
@@ -157,8 +215,8 @@
 
 	<pluginRepositories>
 		<pluginRepository>
-		    <id>mule-public</id>
-		    <url>https://repository.mulesoft.org/nexus/content/repositories/releases</url>
+			<id>mule-public</id>
+			<url>https://repository.mulesoft.org/nexus/content/repositories/releases</url>
 		</pluginRepository>
 		<pluginRepository>
 			<id>mulesoft-releases</id>
