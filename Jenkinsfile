@@ -5,7 +5,7 @@ pipeline {
         jdk 'Java 8u221' 
     }
   stages {
-  stage('Deploy CloudHub') { 
+  stage('Test') { 
       environment {
         TOKEN = credentials('token')
       }
