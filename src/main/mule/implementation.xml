@@ -59,7 +59,7 @@ payload
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ---
-(payload map (flight) -> {
+if (payload is String) payload else (payload map (flight) -> {
 	flight_id: flight.ID,
 	plate_type: flight.planeType,
 	date: flight.takeOffDate,

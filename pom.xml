@@ -74,23 +74,24 @@
 					</execution>
 				</executions>
 				<configuration>
-                    <coverage>
-                    	<runCoverage>true</runCoverage>
-                        <failBuild>false</failBuild>
-                        <requiredApplicationCoverage>50</requiredApplicationCoverage>
-                        <requiredResourceCoverage>0</requiredResourceCoverage>
-                        <requiredFlowCoverage>10</requiredFlowCoverage>
-                        <ignoreFlows>
-							<ignoreFlow>scheduler-flow</ignoreFlow>	
-							<ignoreFlow>short-scheduler-flow</ignoreFlow>	
+					<coverage>
+						<runCoverage>true</runCoverage>
+						<failBuild>true</failBuild>
+						<requiredApplicationCoverage>85</requiredApplicationCoverage>
+						<requiredResourceCoverage>0</requiredResourceCoverage>
+						<requiredFlowCoverage>0</requiredFlowCoverage>
+						<ignoreFlows>
+							<ignoreFlow>scheduler-flow</ignoreFlow>
+							<ignoreFlow>short-scheduler-flow</ignoreFlow>
 							<ignoreFlow>common-subflow</ignoreFlow>
+							<ignoreFlow>american-flights-api-main</ignoreFlow>
 						</ignoreFlows>
-                        <formats>
-                            <format>console</format>
-                            <format>html</format>
-                        </formats>
-                    </coverage>
-            	</configuration>
+						<formats>
+							<format>console</format>
+							<format>html</format>
+						</formats>
+					</coverage>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
@@ -139,12 +140,6 @@
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
-			<groupId>org.mule.modules</groupId>
-			<artifactId>mule-apikit-module</artifactId>
-			<version>1.5.3</version>
-			<classifier>mule-plugin</classifier>
-		</dependency>
-		<dependency>
 			<groupId>org.mule.connectors</groupId>
 			<artifactId>mule-db-connector</artifactId>
 			<version>1.10.3</version>
@@ -186,6 +181,12 @@
 			<groupId>com.mulesoft.munit.utils</groupId>
 			<artifactId>munit-dbserver-module</artifactId>
 			<version>2.0.2</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.mule.modules</groupId>
+			<artifactId>mule-apikit-module</artifactId>
+			<version>1.5.4</version>
 			<classifier>mule-plugin</classifier>
 		</dependency>
 	</dependencies>

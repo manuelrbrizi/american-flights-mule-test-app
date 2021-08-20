@@ -28,5 +28,32 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 			<munit-tools:assert-that doc:name="payload size &gt; 1" doc:id="3e822440-7a69-4214-9aee-e6d5acc07f34" is="#[MunitTools::greaterThan(2)]" expression='#[sizeOf(payload)]'/>
 		</munit:validation>
 	</munit:test>
+	<munit:test name="implementation-test-suite-get-american-flights-by-idTest" doc:id="6d5b7e25-d51e-4539-a7d6-a18bf94659cf" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="ce8834d8-88a0-44dc-9c3c-13232685ac94" processor="db:select">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="flights from database" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="4cc9dc9e-ab16-43a4-b9ab-a99d6fe4ede5" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="Database_Config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/java --- []]" mediaType="application/java" encoding="UTF-8" />
+					<munit-tools:error typeId="MULE:UNKNOWN" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<flow-ref doc:name="Flow-ref to get-american-flights-by-id" doc:id="0e7e3979-617a-4228-9944-89693b0d8181" name="get-american-flights-by-id" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify call" doc:id="9a4ee1f1-5669-4960-849b-11f51f227636" processor="set-payload" times="#[1]">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue='#["Not any flight for that ID"]' attributeName="value" />
+					<munit-tools:with-attribute whereValue="error message" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="1769c5d1-ff62-4637-a3e0-417208d4930f" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
 
 </mule>

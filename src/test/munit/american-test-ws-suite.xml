@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="american-test-ws-suite.xml" />
+	<munit:test name="get:\flights:american-flights-api-config-test" doc:id="0080db79-db19-414d-a765-69dca9bc594e" >
+		<munit:behavior >
+			<munit-tools:spy doc:name="Spy common-subflow" doc:id="b840d224-f0cb-4c56-8b91-f4337102fd41" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="547e3eba-9128-43fa-8136-485970329aeb" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:before-call >
+					<munit-tools:assert doc:name="Assert payload" doc:id="d8632b7b-86fa-406a-966d-55a826549fd6" message="The payload does not match">
+						<munit-tools:that ><![CDATA[#[%dw 2.0
+import getflightsamericanflightsapiconfigtest::spy_assert_payload
+---
+spy_assert_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+					</munit-tools:assert>
+				</munit-tools:before-call>
+				<munit-tools:after-call >
+					<munit-tools:assert doc:name="Assert payload" doc:id="3604bdf6-23d3-40e9-8f65-bed29ca49d00" message="The payload does not match">
+						<munit-tools:that ><![CDATA[#[%dw 2.0
+import getflightsamericanflightsapiconfigtest::spy_assert_payload1
+---
+spy_assert_payload1::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+					</munit-tools:assert>
+				</munit-tools:after-call>
+			</munit-tools:spy>
+			<munit:set-event doc:name="Set Input" doc:id="844f4f14-05f8-4b63-9183-689237530364" >
+				<munit:payload value="#[readUrl('classpath://getflightsamericanflightsapiconfigtest/set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://getflightsamericanflightsapiconfigtest/set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getflightsamericanflightsapiconfigtest/set-event_variable_.dwl')]" />
+					<munit:variable key="flow" value="#[readUrl('classpath://getflightsamericanflightsapiconfigtest/set-event_variable_1.dwl')]" encoding="UTF-8" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\flights:american-flights-api-config" doc:id="8fb3173d-4f5f-46ed-913f-4638fb2fafdd" name="get:\flights:american-flights-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="b259aa3b-352d-48d1-8c6f-10c378842cf1" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import getflightsamericanflightsapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="Verify get-american-flights" doc:id="e5fae67c-aafa-4e5e-91f2-4f38e6149487" processor="flow-ref" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="0cdc880e-baf4-427b-b1f9-8af9e8d16f42" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify common-subflow" doc:id="62087706-9a5d-4656-8e57-510faa259160" processor="flow-ref" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="547e3eba-9128-43fa-8136-485970329aeb" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="get:\flights\(ID):american-flights-api-config-test" doc:id="b594f599-1747-4c7c-a320-379b43c5c0b1" >
+		<munit:behavior >
+			<munit-tools:spy doc:name="Spy common-subflow" doc:id="72131191-2b0a-4f91-83c0-8ae695884693" processor="flow-ref">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="37d3d984-1940-4227-8728-162d38ae5e92" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:before-call >
+					<munit-tools:assert doc:name="Assert payload" doc:id="02be078e-11a3-4c84-b4e6-9d4828e8265f" message="The payload does not match">
+						<munit-tools:that ><![CDATA[#[%dw 2.0
+import getflightsIDamericanflightsapiconfigtest::spy_assert_payload
+---
+spy_assert_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+					</munit-tools:assert>
+				</munit-tools:before-call>
+				<munit-tools:after-call >
+					<munit-tools:assert doc:name="Assert payload" doc:id="af399f5d-9fe3-4d35-8735-025b3f9b0427" message="The payload does not match">
+						<munit-tools:that ><![CDATA[#[%dw 2.0
+import getflightsIDamericanflightsapiconfigtest::spy_assert_payload1
+---
+spy_assert_payload1::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+					</munit-tools:assert>
+				</munit-tools:after-call>
+			</munit-tools:spy>
+			<munit:set-event doc:name="Set Input" doc:id="5523e8ee-2f70-4f8f-aa58-3f47cbf66f6a" >
+				<munit:payload value="#[readUrl('classpath://getflightsIDamericanflightsapiconfigtest/set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://getflightsIDamericanflightsapiconfigtest/set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getflightsIDamericanflightsapiconfigtest/set-event_variable_.dwl')]" />
+					<munit:variable key="flow" value="#[readUrl('classpath://getflightsIDamericanflightsapiconfigtest/set-event_variable_1.dwl')]" encoding="UTF-8" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\flights\(ID):american-flights-api-config" doc:id="2600765b-8882-49f9-9671-28133c3680e9" name="get:\flights\(ID):american-flights-api-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="014e5d59-d3e1-40fa-97f1-effb6e3484e7" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import getflightsIDamericanflightsapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="Verify get-american-flights-by-id" doc:id="32a69a82-6fb2-45d4-9d84-ea6c5d0c9b60" processor="flow-ref" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="da6e926c-02db-4454-97b6-d7de863588ac" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify common-subflow" doc:id="470303fd-ee9d-425f-b9f5-3d8a084d29f7" processor="flow-ref" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="37d3d984-1940-4227-8728-162d38ae5e92" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+
+</mule>
