@@ -16,5 +16,4 @@ http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/m
 	<db:config name="Database_Config" doc:name="Database Config" doc:id="031a53fb-9d40-42f5-8617-30d4c8ded424" >
 		<db:my-sql-connection host="${db.host}" port="${db.port}" user="${secure::db.user}" password="${secure::db.password}" database="${db.database}" />
 	</db:config>
-	<api-gateway:autodiscovery apiId="17133614" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="9f6c5f11-1b61-448c-b2b3-8fada8f0b77c" flowRef="american-flights-api-main" />
 </mule>
