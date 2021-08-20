@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:db="http://www.mulesoft.org/schema/mule/db"
-	xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger"
-	xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+<mule xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd
-http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
 	<json-logger:config name="JSON_Logger_Config" doc:name="JSON Logger Config" doc:id="984c7b7a-74f8-449b-a756-586718a2f97b" environment="${env}" />
 	<configuration-properties doc:name="Configuration properties" doc:id="7a86f1e3-4f87-43d1-8063-87cc2862ea2a" file="properties/${env}-properties.yaml" />
 	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="2bdf6a20-37ca-411b-8101-fa9e97aff394" file="properties/${env}-sec-properties.yaml" key="${token}" >
@@ -15,4 +16,5 @@ http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/sc
 	<db:config name="Database_Config" doc:name="Database Config" doc:id="031a53fb-9d40-42f5-8617-30d4c8ded424" >
 		<db:my-sql-connection host="${db.host}" port="${db.port}" user="${secure::db.user}" password="${secure::db.password}" database="${db.database}" />
 	</db:config>
+	<api-gateway:autodiscovery apiId="17133614" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="9f6c5f11-1b61-448c-b2b3-8fada8f0b77c" flowRef="american-flights-api-main" />
 </mule>
